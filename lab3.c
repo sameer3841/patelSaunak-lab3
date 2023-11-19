@@ -7,8 +7,8 @@ extern int** sudoku_board;
 int* worker_validation;
 
 int** read_board_from_file(char* filename){
-    FILE *fp = NULL;
-    int** board = NULL;
+    FILE *fp = fopen(filename,"r");
+    int** board = (int**)malloc(ROW_SIZE * sizeof(int*));
 
     // replace this comment with your code
 
