@@ -33,9 +33,31 @@ int is_board_valid(){
 
     tid = (pthread_t*) malloc(sizeof(int*) * NUM_OF_THREADS);
     parameter = (param_struct*) malloc(sizeof(param_struct) * NUM_OF_THREADS);
+    for(int i = 0; i < ROW_SIZE; i++){
+        parameter[i].starting_row = i;
+        parameter[i].starting_col = 0;
+        parameter[i].ending_col = 0;
+        parameter[i].ending_row = i;
+        pthread_create(&(tid[i]), &attr, valid_row(sudoku_board,parameter[i]), &(parameter[i]));
+    }
 
     
-    
     // replace this comment with your code
+    for(int i = 0;i<NUM_OF_THREADS; i++) 
+        if (worker_validation[i] != 1) return 0;
+    return 1;
     
+}
+
+int valid_row(int** board, param_struct p){
+    int ans[9];
+    for(int i = p.starting_row; i < p.ending_row; i++)
+        for(int z = p.starting_col; z < p.ending_row; z++){
+            int current = board[i][z];
+            ans[current - 1] = current - (current - 1);
+        }
+
+    for(int i = 0; i < ROW_SIZE; i++)
+        if(ans[i] != 1) return 0;
+    return 1;
 }
