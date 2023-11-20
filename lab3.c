@@ -14,7 +14,6 @@ int** read_board_from_file(char* filename){
     for(int i = 0; i < COL_SIZE; i++)
         board[i] = (int*) malloc(COL_SIZE * sizeof(int));
 
-    // replace this comment with your code
     if(fp == NULL) return;
 
 
@@ -31,6 +30,11 @@ int is_board_valid(){
     pthread_t* tid;  /* the thread identifiers */
     pthread_attr_t attr;
     param_struct* parameter;
+
+    tid = (pthread_t*) malloc(sizeof(int*) * NUM_OF_THREADS);
+    parameter = (param_struct*) malloc(sizeof(param_struct) * NUM_OF_THREADS);
+
+    
     
     // replace this comment with your code
     
