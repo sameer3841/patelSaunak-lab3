@@ -29,11 +29,18 @@ int is_board_valid(){
     param_struct* parameter;
 
     tid = (pthread_t*) malloc(sizeof(int*) * NUM_OF_THREADS);
-
     worker_validation = (int*) malloc(sizeof(int) * NUM_OF_THREADS);
-    // replace this comment with your code
+
 
 
 }
 
+void is_valid(param_struct* param){
+    int startrow = param->starting_row;
+    int endrow = param->ending_row;
+    int startcol = param->starting_col;
+    int endcol = param->ending_col;
+
+    
+}
 
