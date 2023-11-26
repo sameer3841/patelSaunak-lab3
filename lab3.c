@@ -42,12 +42,14 @@ void* is_valid(void* arg){
     }
 
     else if(startcol == endcol){
-        for(int i = 0; i < COL_SIZE; i++){
+        for(int i = 0; i < ROW_SIZE; i++){
             current = sudoku_board[startrow][i];
             if((current > 0 && current < 10) | arr[current - 1] == 1) pthread_exit(NULL);
             else arr[current - 1] = 1;
         }
         worker_validation[startrow + 9] = 1;
+    } else {
+
     }
     pthread_exit(NULL);
 }
