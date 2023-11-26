@@ -49,7 +49,14 @@ void* is_valid(void* arg){
         }
         worker_validation[startrow + 9] = 1;
     } else {
-
+        for(int r = startrow; r < startrow + 3; r++){
+            for(int c = startcol; c < startcol + 3; c++){
+                current = sudoku_board[r][c];
+                if((current > 0 && current < 10) | arr[current - 1] == 1) pthread_exit(NULL);
+                else arr[current - 1] = 1;
+            }
+        }
+        worker_validation[startrow + startcol / 3] = 1;
     }
     pthread_exit(NULL);
 }
@@ -66,6 +73,22 @@ int is_board_valid(){
 
     for(int r = 0; r < ROW_SIZE; r++){
         for(int c = 0; c < COL_SIZE; c++){
+            if(r % 3 == 0 && c % 3 == 0){
+                parameter = (param_struct*) malloc(sizeof(param_struct));
+                parameter->starting_row = r;
+                parameter->starting_col = c;
+                parameter->ending_row = r+1;
+                parameter->ending_col = c+1;
+                pthread_create(&tid[index++], NULL, is_valid, parameter);
+            }
+            if(r == 0){
+                parameter = (param_struct*) malloc(sizeof(param_struct));
+                parameter->starting_row = r;
+                parameter->starting_col = c;
+                parameter->ending_row = r;
+                parameter->ending_col = c+1;
+                pthread_create(&tid[index++], NULL, is_valid, parameter);
+            }
             if(c == 0){
                 parameter = (param_struct*) malloc(sizeof(param_struct));
                 parameter->starting_row = r;
