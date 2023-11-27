@@ -9,17 +9,17 @@ int* worker_validation;
 int** read_board_from_file(char* filename){
 
     FILE *fp = fopen(filename,"r");
-    int** board = (int**)malloc(ROW_SIZE * sizeof(int*));
+    sudoku_board = (int**)malloc(ROW_SIZE * sizeof(int*));
 
     for(int i = 0; i < COL_SIZE; i++)
-        board[i] = (int*) malloc(COL_SIZE * sizeof(int));
+        sudoku_board[i] = (int*) malloc(COL_SIZE * sizeof(int));
     if(fp == NULL) return;
 
     for(int r = 0; r < ROW_SIZE; r++)
         for(int c = 0; c < COL_SIZE; c++)
-            fscanf(fp,"%d",&board[r][c]);
+            fscanf(fp,"%d",&sudoku_board[r][c]);
     fclose(fp);
-    return board;
+    return sudoku_board;
 }
 
 void* is_valid(void* arg){
@@ -31,11 +31,10 @@ void* is_valid(void* arg){
     int arr[9] = {0};
     int current;
 
-    //checking by row
     if(startrow == endrow){
         for(int i = 0; i < COL_SIZE; i++){
             current = sudoku_board[i][startcol];
-            if((current > 0 && current < 10) | arr[current - 1] == 1) pthread_exit(NULL);
+            if((current > 9 || current < 1) || arr[current - 1] == 1) pthread_exit(NULL);
             else arr[current - 1] = 1;
         }
         worker_validation[startcol + 18] = 1;
@@ -44,7 +43,7 @@ void* is_valid(void* arg){
     else if(startcol == endcol){
         for(int i = 0; i < ROW_SIZE; i++){
             current = sudoku_board[startrow][i];
-            if((current > 0 && current < 10) | arr[current - 1] == 1) pthread_exit(NULL);
+            if((current > 9 || current < 1) || arr[current - 1] == 1) pthread_exit(NULL);
             else arr[current - 1] = 1;
         }
         worker_validation[startrow + 9] = 1;
@@ -52,7 +51,7 @@ void* is_valid(void* arg){
         for(int r = startrow; r < startrow + 3; r++){
             for(int c = startcol; c < startcol + 3; c++){
                 current = sudoku_board[r][c];
-                if((current > 0 && current < 10) | arr[current - 1] == 1) pthread_exit(NULL);
+                if((current > 9 || current < 1) || arr[current - 1] == 1) pthread_exit(NULL);
                 else arr[current - 1] = 1;
             }
         }
@@ -74,28 +73,28 @@ int is_board_valid(){
     for(int r = 0; r < ROW_SIZE; r++){
         for(int c = 0; c < COL_SIZE; c++){
             if(r % 3 == 0 && c % 3 == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct));
-                parameter->starting_row = r;
-                parameter->starting_col = c;
-                parameter->ending_row = r+1;
-                parameter->ending_col = c+1;
-                pthread_create(&tid[index++], NULL, is_valid, parameter);
+                param_struct* diagonal = (param_struct*) malloc(sizeof(param_struct));
+                diagonal->starting_row = r;
+                diagonal->starting_col = c;
+                diagonal->ending_row = r+1;
+                diagonal->ending_col = c+1;
+                pthread_create(&tid[index++], NULL, is_valid, diagonal);
             }
             if(r == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct));
-                parameter->starting_row = r;
-                parameter->starting_col = c;
-                parameter->ending_row = r;
-                parameter->ending_col = c+1;
-                pthread_create(&tid[index++], NULL, is_valid, parameter);
+                param_struct* col = (param_struct*) malloc(sizeof(param_struct));
+                col->starting_row = r;
+                col->starting_col = c;
+                col->ending_row = r;
+                col->ending_col = c+1;
+                pthread_create(&tid[index++], NULL, is_valid, col);
             }
             if(c == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct));
-                parameter->starting_row = r;
-                parameter->starting_col = c;
-                parameter->ending_row = c;
-                parameter->ending_col = r + 1;
-                pthread_create(&tid[index++], NULL, is_valid, parameter);
+                param_struct* row = (param_struct*) malloc(sizeof(param_struct));
+                row->starting_row = r;
+                row->starting_col = c;
+                row->ending_row = c;
+                row->ending_col = r + 1;
+                pthread_create(&tid[index++], NULL, is_valid, row);
             }
         }
 
