@@ -73,28 +73,28 @@ int is_board_valid(){
     for(int r = 0; r < ROW_SIZE; r++){
         for(int c = 0; c < COL_SIZE; c++){
             if(r % 3 == 0 && c % 3 == 0){
-                param_struct* diagonal = (param_struct*) malloc(sizeof(param_struct));
-                diagonal->starting_row = r;
-                diagonal->starting_col = c;
-                diagonal->ending_row = r+1;
-                diagonal->ending_col = c+1;
-                pthread_create(&tid[index++], NULL, is_valid, diagonal);
+                parameter = (param_struct*) malloc(sizeof(param_struct));
+                parameter->starting_row = r;
+                parameter->starting_col = c;
+                parameter->ending_row = r+1;
+                parameter->ending_col = c+1;
+                pthread_create(&tid[index++], NULL, is_valid, parameter);
             }
             if(r == 0){
-                param_struct* col = (param_struct*) malloc(sizeof(param_struct));
-                col->starting_row = r;
-                col->starting_col = c;
-                col->ending_row = r;
-                col->ending_col = c+1;
-                pthread_create(&tid[index++], NULL, is_valid, col);
+                parameter = (param_struct*) malloc(sizeof(param_struct));
+                parameter->starting_row = r;
+                parameter->starting_col = c;
+                parameter->ending_row = r;
+                parameter->ending_col = c+1;
+                pthread_create(&tid[index++], NULL, is_valid, parameter);
             }
             if(c == 0){
-                param_struct* row = (param_struct*) malloc(sizeof(param_struct));
-                row->starting_row = r;
-                row->starting_col = c;
-                row->ending_row = c;
-                row->ending_col = r + 1;
-                pthread_create(&tid[index++], NULL, is_valid, row);
+                parameter = (param_struct*) malloc(sizeof(param_struct));
+                parameter->starting_row = r;
+                parameter->starting_col = c;
+                parameter->ending_row = c;
+                parameter->ending_col = r + 1;
+                pthread_create(&tid[index++], NULL, is_valid, parameter);
             }
         }
 
@@ -111,6 +111,3 @@ int is_board_valid(){
     return 1;
 
 }
-
-
-
