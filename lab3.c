@@ -8,16 +8,22 @@ int* worker_validation;
 
 int** read_board_from_file(char* filename){
 
-    FILE *fp = fopen(filename,"r");
+    FILE *fp = NULL;
     sudoku_board = (int**)malloc(ROW_SIZE * sizeof(int*));
 
     for(int i = 0; i < COL_SIZE; i++)
         sudoku_board[i] = (int*) malloc(COL_SIZE * sizeof(int));
-    if(fp == NULL) return;
-
+    
+    fp = fopen(filename,"r");
+    if(fp == NULL) return NULL;
     for(int r = 0; r < ROW_SIZE; r++)
         for(int c = 0; c < COL_SIZE; c++)
             fscanf(fp,"%d",&sudoku_board[r][c]);
+
+    for(int x = 0; x < ROW_SIZE; x++){
+        for(int y = 0; y < COL_SIZE; y++) printf("%d ",sudoku_board[x][y]);
+        printf("\n");
+    }
     fclose(fp);
     return sudoku_board;
 }
@@ -73,7 +79,7 @@ int is_board_valid(){
     for(int r = 0; r < ROW_SIZE; r++){
         for(int c = 0; c < COL_SIZE; c++){
             if(r % 3 == 0 && c % 3 == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct));
+                parameter = (param_struct*) malloc(sizeof(param_struct*));
                 parameter->starting_row = r;
                 parameter->starting_col = c;
                 parameter->ending_row = r+1;
@@ -81,7 +87,7 @@ int is_board_valid(){
                 pthread_create(&tid[index++], NULL, is_valid, parameter);
             }
             if(r == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct));
+                parameter = (param_struct*) malloc(sizeof(param_struct*));
                 parameter->starting_row = r;
                 parameter->starting_col = c;
                 parameter->ending_row = r;
@@ -89,11 +95,11 @@ int is_board_valid(){
                 pthread_create(&tid[index++], NULL, is_valid, parameter);
             }
             if(c == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct));
+                parameter = (param_struct*) malloc(sizeof(param_struct*));
                 parameter->starting_row = r;
                 parameter->starting_col = c;
                 parameter->ending_row = c;
-                parameter->ending_col = r + 1;
+                parameter->ending_col = r+1;
                 pthread_create(&tid[index++], NULL, is_valid, parameter);
             }
         }
@@ -109,5 +115,4 @@ int is_board_valid(){
     free(worker_validation);
     free(tid);
     return 1;
-
 }
