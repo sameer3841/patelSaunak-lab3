@@ -102,14 +102,14 @@ int is_board_valid(){
     pthread_attr_t attr;
     param_struct* parameter;
 
-    tid = (pthread_t*) malloc(sizeof(int*) * NUM_OF_THREADS);
+    tid = (pthread_t*) malloc(sizeof(pthread_t) * NUM_OF_THREADS);
     int index = 0;
     worker_validation = (int*) malloc(sizeof(int) * NUM_OF_THREADS);
     printf("Invalids:\n");
     for(int r = 0; r < ROW_SIZE; r++){
         for(int c = 0; c < COL_SIZE; c++){
             if(r % 3 == 0 && c % 3 == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct*));
+                parameter = (param_struct*) malloc(sizeof(param_struct));
                 parameter->starting_row = r;
                 parameter->starting_col = c;
                 parameter->ending_row = r+1;
@@ -117,7 +117,7 @@ int is_board_valid(){
                 pthread_create(&tid[index++], NULL, validate3x3, parameter);
             }
             if(r == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct*));
+                parameter = (param_struct*) malloc(sizeof(param_struct));
                 parameter->starting_row = r;
                 parameter->starting_col = c;
                 parameter->ending_row = r;
@@ -125,7 +125,7 @@ int is_board_valid(){
                 pthread_create(&tid[index++], NULL, validateCol, parameter);
             }
             if(c == 0){
-                parameter = (param_struct*) malloc(sizeof(param_struct*));
+                parameter = (param_struct*) malloc(sizeof(param_struct));
                 parameter->starting_row = r;
                 parameter->starting_col = c;
                 parameter->ending_row = c;
